@@ -15,6 +15,7 @@ export MattStandard,
        ApertureAt,
        ApertureShape,
        RFParams,
+       SpaceChargeParams,
        BMultipole,
        DefExpr,
        Drift,
@@ -82,6 +83,7 @@ include("control.jl")
 include("alignment.jl")
 include("patch.jl")
 include("aperture.jl")
+include("spacecharge.jl")
 include("keymaps.jl")
 include("macros.jl")
 include("bits/bitsparams.jl")
