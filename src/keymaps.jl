@@ -77,6 +77,7 @@ const PARAMS_MAP = Dict{Symbol,Type{<:AbstractParams}}(
   :PatchParams => PatchParams,
   :RFParams => RFParams,
   :ApertureParams => ApertureParams,
+  :SpaceChargeParams => SpaceChargeParams,
 )
 
 
