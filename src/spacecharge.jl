@@ -11,6 +11,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
 - `mesh::Union{M, Nothing}`: The 3D mesh object (can be CPU or GPU based), or nothing if not yet created
 - `backend::Symbol`: The backend being used (:cpu or :gpu)
 - `grid_size::NTuple{3, Int}`: The grid dimensions for the mesh
+- `total_charge::Float64`: The total charge in the bunch (in Coulombs)
 
 # Type Parameters
 - `M`: The concrete mesh type
@@ -19,6 +20,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
   mesh::Union{M, Nothing}
   backend::Symbol
   grid_size::NTuple{3, Int}
+  total_charge::Float64
 end
 
 """
@@ -41,7 +43,8 @@ Creates a mesh with placeholder bounds that will be determined during deposition
 function SpaceChargeParams(
   backend::Symbol,
   grid_size::NTuple{3, Int};
-  T::Type{<:AbstractFloat}=Float64
+  T::Type{<:AbstractFloat}=Float64,
+  total_charge::Float64=0.0
 )
   if backend == :gpu
     array_type = CuArray
@@ -57,7 +60,7 @@ function SpaceChargeParams(
     array_type=array_type
   )
 
-  return SpaceChargeParams(mesh=mesh, backend=backend, grid_size=grid_size)
+  return SpaceChargeParams(mesh=mesh, backend=backend, grid_size=grid_size, total_charge=total_charge)
 end
 
 # Convenience constructors
@@ -66,7 +69,7 @@ end
 
 Default constructor that creates CPU-based space charge parameters with default grid size.
 """
-SpaceChargeParams(; kwargs...) = SpaceChargeParams(:cpu, (32, 32, 32); kwargs...)
+#SpaceChargeParams(; kwargs...) = SpaceChargeParams(:cpu, (32, 32, 32); kwargs...)
 
 """
   SpaceChargeParams(grid_size; kwargs...)
