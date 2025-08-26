@@ -12,7 +12,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
 - `backend::Symbol`: The backend being used (:cpu or :gpu)
 - `grid_size::NTuple{3, Int}`: The grid dimensions for the mesh
 - `total_charge::Float64`: The total charge in the bunch (in Coulombs)
-- `efield_scratch::Union{AbstractVector, Nothing}`: Persistent scratch space for efield calculations, lazy initialized as (n_particles, 3) array
+- `efield_scratch::Union{Matrix, Nothing}`: Persistent scratch space for efield calculations, lazy initialized as (n_particles, 3) array
 
 # Type Parameters
 - `M`: The concrete mesh type
@@ -22,7 +22,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
   backend::Symbol
   grid_size::NTuple{3, Int}
   total_charge::Float64
-  efield_scratch::Union{AbstractVector, Nothing}
+  efield_scratch::Union{Matrix, Nothing}
 end
 
 """
