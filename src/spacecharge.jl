@@ -12,6 +12,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
 - `backend::Symbol`: The backend being used (:cpu or :gpu)
 - `grid_size::NTuple{3, Int}`: The grid dimensions for the mesh
 - `total_charge::Float64`: The total charge in the bunch (in Coulombs)
+- `efield_scratch::Union{AbstractVector, Nothing}`: Persistent scratch space for efield calculations, lazy initialized as (n_particles, 3) array
 
 # Type Parameters
 - `M`: The concrete mesh type
@@ -21,6 +22,7 @@ The mesh can be either CPU or GPU based, with types automatically inferred.
   backend::Symbol
   grid_size::NTuple{3, Int}
   total_charge::Float64
+  efield_scratch::Union{AbstractVector, Nothing}
 end
 
 """
@@ -60,7 +62,7 @@ function SpaceChargeParams(
     array_type=array_type
   )
 
-  return SpaceChargeParams(mesh=mesh, backend=backend, grid_size=grid_size, total_charge=total_charge)
+  return SpaceChargeParams(mesh=mesh, backend=backend, grid_size=grid_size, total_charge=total_charge, efield_scratch=nothing)
 end
 
 # Convenience constructors
@@ -77,3 +79,24 @@ Default constructor that creates CPU-based space charge parameters with default 
 Constructor with specified grid size, defaulting to CPU backend.
 """
 SpaceChargeParams(grid_size::NTuple{3, Int}; kwargs...) = SpaceChargeParams(:cpu, grid_size; kwargs...)
+
+"""
+    init_efield_scratch(scp::SpaceChargeParams, bunch)
+
+Initialize the efield scratch space vector if it doesn't exist.
+The vector will be allocated with the same type and element type as the bunch coordinates
+and sized to match the number of particles.
+
+# Arguments
+- `scp::SpaceChargeParams`: The space charge parameters object
+- `bunch`: The particle bunch vector used to determine the type and size of the scratch space
+"""
+function init_efield_scratch(scp::SpaceChargeParams, bunch)
+  # Initialize the scratch space as (n_particles, 3) array to match the coordinate type and element type
+  if scp.efield_scratch === nothing
+    n_particles = size(bunch, 1)
+    coord_eltype = eltype(bunch)
+    scp.efield_scratch = similar(bunch, coord_eltype, (n_particles, 3))
+  end
+  
+end
